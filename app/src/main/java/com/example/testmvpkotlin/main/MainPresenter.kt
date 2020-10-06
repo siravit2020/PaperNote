@@ -47,8 +47,8 @@ class MainPresenter: MvpBasePresenter<MainView>(){
         val db = Firebase.firestore
         db.collection(FirebaseAuth.getInstance().uid.toString()).document(number).update(map)
     }
-    fun delete(charItem: NoteItem, number: String, position: Int, arrayList: ArrayList<NoteItem>) {
-        Log.d("sss",""+ position + " " + arrayList.size)
+    fun delete(charItem: NoteItem, number: String) {
+       // Log.d("sss",""+ position + " " + arrayList.size)
         val db = Firebase.firestore
         db.collection(FirebaseAuth.getInstance().uid.toString()).document(number).delete().addOnSuccessListener {
            ifViewAttached { view-> view.updateDelete(charItem) }

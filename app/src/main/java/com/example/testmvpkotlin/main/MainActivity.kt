@@ -28,7 +28,7 @@ import com.google.firebase.ktx.Firebase
 import com.hannesdorfmann.mosby3.mvp.MvpActivity
 
 
-class MainActivity : MvpActivity<MainView, MainPresenter>(), MainView,View.OnClickListener {
+class MainActivity : MvpActivity<MainView, MainPresenter>(), MainView,View.OnClickListener,NoteAdapter.AdapterNote {
     private lateinit var b :ActivityMainBinding
     private var auth: FirebaseAuth = Firebase.auth
     lateinit var recyclerView: RecyclerView
@@ -81,7 +81,7 @@ class MainActivity : MvpActivity<MainView, MainPresenter>(), MainView,View.OnCli
     override fun updateRecyclerView(arrayList: ArrayList<NoteItem>) {
         Log.d("check",arrayList.toString())
         this.arrayList = arrayList
-        alphaAdapters = NoteAdapter(arrayList,this)
+        alphaAdapters = NoteAdapter(arrayList,this,this)
         recyclerView.adapter = alphaAdapters
         alphaAdapters.notifyDataSetChanged()
         recyclerView.scheduleLayoutAnimation()
@@ -92,7 +92,7 @@ class MainActivity : MvpActivity<MainView, MainPresenter>(), MainView,View.OnCli
         return MainPresenter()
     }
 
-    override fun color(context: Context, note: CardView, number: String) {
+   /* override fun color(context: Context, note: CardView, number: String) {
         ColorPickerDialogBuilder
                 .with(context)
             .setTitle("์Note color")
@@ -110,12 +110,33 @@ class MainActivity : MvpActivity<MainView, MainPresenter>(), MainView,View.OnCli
     }
     override fun delete(charItem: NoteItem, number: String, position: Int) {
         presenter.delete(charItem,number, position, arrayList)
-    }
+    }*/
 
     override fun updateDelete(charItem: NoteItem) {
         arrayList.remove(charItem)
         alphaAdapters.notifyDataSetChanged()
         recyclerView.scheduleLayoutAnimation()
+    }
+
+    override fun delete(charItem: NoteItem) {
+        presenter.delete(charItem,charItem.number)
+    }
+
+    override fun changeColor(note: CardView, number: String) {
+        ColorPickerDialogBuilder
+            .with(this)
+            .setTitle("์Note color")
+            .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+            .lightnessSliderOnly()
+            .setPositiveButton("ok") { _, selectedColor, _ ->
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    presenter.updateData(selectedColor, number)
+                    ViewCompat.setBackgroundTintList(note, ColorStateList.valueOf(selectedColor))
+                }
+            }
+            .setNegativeButton("cancel") { _, _ -> }
+            .build()
+            .show()
     }
 
 

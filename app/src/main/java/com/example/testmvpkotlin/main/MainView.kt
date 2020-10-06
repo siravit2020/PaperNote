@@ -7,8 +7,8 @@ import com.hannesdorfmann.mosby3.mvp.MvpView
 
 interface MainView : MvpView {
     fun updateRecyclerView(arrayList: ArrayList<NoteItem>)
-    fun color(context: Context, note: CardView, number: String)
+    //fun color(context: Context, note: CardView, number: String)
     fun hideProgress()
     fun updateDelete(charItem: NoteItem)
-    fun delete(charItem: NoteItem, number: String, position: Int)
+    //fun delete(charItem: NoteItem, number: String, position: Int)
 }
