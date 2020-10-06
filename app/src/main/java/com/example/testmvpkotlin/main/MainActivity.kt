@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.testmvpkotlin.AdapterNote
 import com.example.testmvpkotlin.NoteAdapter
 import com.example.testmvpkotlin.NoteItem
 import com.example.testmvpkotlin.R
@@ -28,7 +29,7 @@ import com.google.firebase.ktx.Firebase
 import com.hannesdorfmann.mosby3.mvp.MvpActivity
 
 
-class MainActivity : MvpActivity<MainView, MainPresenter>(), MainView,View.OnClickListener,NoteAdapter.AdapterNote {
+class MainActivity : MvpActivity<MainView, MainPresenter>(), MainView,View.OnClickListener,AdapterNote {
     private lateinit var b :ActivityMainBinding
     private var auth: FirebaseAuth = Firebase.auth
     lateinit var recyclerView: RecyclerView
@@ -74,14 +75,12 @@ class MainActivity : MvpActivity<MainView, MainPresenter>(), MainView,View.OnCli
         if(v == b.floatingActionButton){
             startActivity(Intent(this, AddPaperActivity::class.java))
         }
-
     }
-
 
     override fun updateRecyclerView(arrayList: ArrayList<NoteItem>) {
         Log.d("check",arrayList.toString())
         this.arrayList = arrayList
-        alphaAdapters = NoteAdapter(arrayList,this,this)
+        alphaAdapters = NoteAdapter(arrayList,this)
         recyclerView.adapter = alphaAdapters
         alphaAdapters.notifyDataSetChanged()
         recyclerView.scheduleLayoutAnimation()
@@ -91,26 +90,6 @@ class MainActivity : MvpActivity<MainView, MainPresenter>(), MainView,View.OnCli
     override fun createPresenter(): MainPresenter {
         return MainPresenter()
     }
-
-   /* override fun color(context: Context, note: CardView, number: String) {
-        ColorPickerDialogBuilder
-                .with(context)
-            .setTitle("์Note color")
-            .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-            .lightnessSliderOnly()
-            .setPositiveButton("ok") { _, selectedColor, _ ->
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    presenter.updateData(selectedColor, number)
-                    ViewCompat.setBackgroundTintList(note, ColorStateList.valueOf(selectedColor))
-                }
-            }
-            .setNegativeButton("cancel") { _, _ -> }
-            .build()
-            .show()
-    }
-    override fun delete(charItem: NoteItem, number: String, position: Int) {
-        presenter.delete(charItem,number, position, arrayList)
-    }*/
 
     override fun updateDelete(charItem: NoteItem) {
         arrayList.remove(charItem)
@@ -138,6 +117,7 @@ class MainActivity : MvpActivity<MainView, MainPresenter>(), MainView,View.OnCli
             .build()
             .show()
     }
+
 
 
 }

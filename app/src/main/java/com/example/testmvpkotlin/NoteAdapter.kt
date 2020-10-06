@@ -14,12 +14,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testmvpkotlin.addPaper.AddPaperActivity
 import com.example.testmvpkotlin.databinding.GridViewLayoutItemsBinding
-import com.example.testmvpkotlin.main.MainActivity
-import com.google.android.material.snackbar.Snackbar
 
 
-class NoteAdapter(private var arrayList: ArrayList<NoteItem>, var context: Activity,private val adap:AdapterNote) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
-
+class NoteAdapter(private var arrayList: ArrayList<NoteItem>, var context: Activity) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
+    private val adap:AdapterNote = (context as AdapterNote)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding: GridViewLayoutItemsBinding = DataBindingUtil.inflate(inflater,
@@ -28,10 +26,8 @@ class NoteAdapter(private var arrayList: ArrayList<NoteItem>, var context: Activ
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.colorOrDelete(adap,context,arrayList[position])
-
+        holder.bind(adap,context,arrayList[position])
     }
-
 
     override fun getItemCount(): Int {
         return arrayList.size
@@ -39,7 +35,7 @@ class NoteAdapter(private var arrayList: ArrayList<NoteItem>, var context: Activ
 
     class ViewHolder(val binding: GridViewLayoutItemsBinding) :
         RecyclerView.ViewHolder(binding.root){
-        fun colorOrDelete(action:AdapterNote, context:Context, item: NoteItem){
+        fun bind(action:AdapterNote, context:Context, item: NoteItem){
             binding.titleTextView.text = item.Topic
             binding.message.text = item.message
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -52,21 +48,18 @@ class NoteAdapter(private var arrayList: ArrayList<NoteItem>, var context: Activ
                     PopupMenu(context, binding.root)
                 }
                 popup.menuInflater.inflate(R.menu.menu_popup, popup.menu)
-                popup.setOnMenuItemClickListener {it ->
-
+                popup.setOnMenuItemClickListener {
                     if(it.itemId == R.id.delete){
                         action.delete(item)
                     }
                     if(it.itemId == R.id.color){
                         action.changeColor(binding.note,item.number)
-
                     }
                     true
                 }
                 popup.show()
                 true
             }
-
 
             binding.note.setOnClickListener {
                 val intent = Intent(context,AddPaperActivity::class.java)
@@ -78,13 +71,9 @@ class NoteAdapter(private var arrayList: ArrayList<NoteItem>, var context: Activ
         }
     }
 
-    interface AdapterNote{
-        fun delete(charItem: NoteItem)
-        fun changeColor(note: CardView, number: String)
-    }
+}
 
-
-
-
-
+interface AdapterNote{
+    fun delete(charItem: NoteItem)
+    fun changeColor(note: CardView, number: String)
 }

@@ -1,10 +1,15 @@
 package com.example.testmvpkotlin.addPaper
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter
 
 
@@ -44,6 +49,24 @@ class AddPaperPresenter:MvpBasePresenter<AddPaperView>() {
             }
         }
 
+    }
+    fun imageToText(data: Intent){
+        val imageBitmap = data.extras!!.get("data") as Bitmap
+        val image = InputImage.fromBitmap(imageBitmap, 0)
+        val recognizer = TextRecognition.getClient()
+        recognizer.process(image)
+            .addOnSuccessListener { visionText ->
+                // Task completed successfully
+                // ...
+                val resultText = visionText.text
+                ifViewAttached {
+                    it.imageToText(resultText)
+                }
+            }
+            .addOnFailureListener { e ->
+                // Task failed with an exception
+                // ...
+            }
     }
 
 }

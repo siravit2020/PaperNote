@@ -44,7 +44,7 @@
                     android:layout_height="match_parent"
                     android:layoutAnimation="@anim/layout_animation"
                     android:padding="6dp"
-                    android:background="@drawable/a1"
+                    android:background="@drawable/mybg"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

@@ -49,5 +49,6 @@ dependencies {
     implementation 'petrov.kristiyan:colorpicker-library:1.1.10'
     implementation 'com.github.QuadFlask:colorpicker:0.0.15'
     implementation 'com.google.firebase:firebase-firestore-ktx:21.6.0'
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.1'
 
 }

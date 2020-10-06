@@ -1,9 +1,11 @@
 package com.example.testmvpkotlin.addPaper
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.text.Editable
+import android.provider.MediaStore
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
@@ -13,6 +15,9 @@ import com.example.testmvpkotlin.databinding.ActivityAddPaperBinding
 import com.example.testmvpkotlin.main.MainActivity
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
+
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
 import com.hannesdorfmann.mosby3.mvp.MvpActivity
 
 class AddPaperActivity : MvpActivity<AddPaperView, AddPaperPresenter>(), AddPaperView{
@@ -34,13 +39,22 @@ class AddPaperActivity : MvpActivity<AddPaperView, AddPaperPresenter>(), AddPape
             binding.message.setText(message)
             status = true
         }
+
         binding.topAppBar.apply {
             setOnMenuItemClickListener {
                 if (it.itemId == R.id.save) {
                     if(status)
-                        presenter.updateDataToFirebase(topic,message, selectedColor,intent.getStringExtra("number")!!)
+                        presenter.updateDataToFirebase(
+                            binding.header.text.toString(), binding.message.text.toString(), selectedColor, intent.getStringExtra(
+                                "number"
+                            )!!
+                        )
                     else
-                        presenter.sendDataToFirebase(binding.header.text.toString(),binding.message.text.toString(), selectedColor)
+                        presenter.sendDataToFirebase(
+                            binding.header.text.toString(),
+                            binding.message.text.toString(),
+                            selectedColor
+                        )
 
                 } else if (it.itemId == R.id.logout) {
                     color.show()
@@ -51,6 +65,16 @@ class AddPaperActivity : MvpActivity<AddPaperView, AddPaperPresenter>(), AddPape
             setBackgroundColor(selectedColor)
 
         }
+        binding.bottomNavigation.setOnNavigationItemSelectedListener {
+            if(it.itemId == R.id.image_to_text){
+                dispatchTakePictureIntent()
+            }
+            else{
+
+            }
+            true
+        }
+
     }
 
     override fun createPresenter(): AddPaperPresenter {
@@ -86,7 +110,23 @@ class AddPaperActivity : MvpActivity<AddPaperView, AddPaperPresenter>(), AddPape
             .build()
 
     }
+    val REQUEST_IMAGE_CAPTURE = 1
 
-
-
+    private fun dispatchTakePictureIntent() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        try {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+        } catch (e: ActivityNotFoundException) {
+            // display error state to the user
+        }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            presenter.imageToText(data!!)
+        }
+    }
+    override fun imageToText(text:String) {
+        binding.message.append(text)
+    }
 }

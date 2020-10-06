@@ -16,6 +16,7 @@
             android:layout_height="120dp"
             android:src="@drawable/ic_notes"
             android:layout_marginBottom="30dp"
+            android:scaleType="centerCrop"
             />
 
         <com.google.android.material.textfield.TextInputLayout
