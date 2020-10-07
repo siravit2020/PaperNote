@@ -69,9 +69,6 @@ class AddPaperActivity : MvpActivity<AddPaperView, AddPaperPresenter>(), AddPape
             if(it.itemId == R.id.image_to_text){
                 dispatchTakePictureIntent()
             }
-            else{
-
-            }
             true
         }
 

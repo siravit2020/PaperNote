@@ -26,10 +26,8 @@ class MainPresenter: MvpBasePresenter<MainView>(){
                                 document["colorPaper"].toString().toInt()
                             )
                         )
-
                     }
                     returnData(arrayList)
-
                 }
             }
 
